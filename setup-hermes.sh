@@ -62,7 +62,9 @@ update_system() {
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -qq
   apt-get upgrade -y -qq
-  apt-get install -y -qq curl git ca-certificates unzip
+  # xz-utils: auf Debian-minimal nicht vorinstalliert, wird aber zum Entpacken
+  # der Node.js-Pakete (.tar.xz) durch den Hermes-Installer benötigt.
+  apt-get install -y -qq curl git ca-certificates unzip xz-utils tar
   ok "System aktuell"
 }
 
@@ -203,16 +205,4 @@ print_summary() {
 }
 
 # ── Hauptprogramm ─────────────────────────────────────────────────────
-main() {
-  banner
-  check_root
-  check_os
-  update_system
-  install_hermes
-  configure_openrouter
-  configure_telegram
-  install_service
-  print_summary
-}
-
-main "$@"
+mai
