@@ -2,7 +2,7 @@
 # =============================================================================
 #  HERMES AGENT SETUP SCRIPT
 #  Von 0 auf KI – Workshop "Gruber Haustechnik" Demo + Teilnehmer-Version
-#  Getestet auf: Ubuntu 22.04 LTS (Hetzner CAX11, ARM64)
+#  Getestet auf: Ubuntu 22.04 LTS sowie Debian 12/13 (apt-basiert, x86_64 & ARM64)
 # =============================================================================
 
 set -euo pipefail
@@ -26,6 +26,16 @@ banner() {
   echo -e "${NC}"
 }
 
+# ── Eingabe immer vom Terminal lesen ──────────────────────────────────
+# Wichtig: Das Script wird per 'curl ... | bash' gestartet. Dabei ist die
+# Standard-Eingabe die Pipe (das Script selbst), NICHT die Tastatur.
+# Darum lesen wir Eingaben explizit von /dev/tty.
+ask() {  # ask "Frage: " VARNAME
+  local prompt="$1" __var="$2" __val=""
+  read -rp "$prompt" __val < /dev/tty
+  printf -v "$__var" '%s' "$__val"
+}
+
 # ── Voraussetzungen prüfen ────────────────────────────────────────────
 check_root() {
   if [[ $EUID -ne 0 ]]; then
@@ -33,12 +43,17 @@ check_root() {
   fi
 }
 
-check_ubuntu() {
-  if ! grep -qi "ubuntu" /etc/os-release 2>/dev/null; then
-    warn "Kein Ubuntu erkannt – das Script wurde nur auf Ubuntu 22.04 getestet. Weiter auf eigene Gefahr."
-    read -p "Trotzdem weitermachen? (j/N): " yn
-    [[ "$yn" =~ ^[jJ]$ ]] || exit 1
+check_os() {
+  # Akzeptiert Debian- und Ubuntu-basierte Systeme (beide nutzen apt).
+  local ID="" ID_LIKE="" PRETTY_NAME=""
+  [[ -r /etc/os-release ]] && . /etc/os-release
+  if [[ "${ID:-}" == "ubuntu" || "${ID:-}" == "debian" \
+        || "${ID_LIKE:-}" == *debian* || "${ID_LIKE:-}" == *ubuntu* ]]; then
+    ok "Betriebssystem erkannt: ${PRETTY_NAME:-${ID:-unbekannt}}"
+    return 0
   fi
+  # Kein interaktives Abbruch-Prompt (würde unter 'curl | bash' sofort beenden).
+  warn "Weder Debian noch Ubuntu erkannt (${PRETTY_NAME:-unbekannt}). Script ist für apt-basierte Systeme gedacht – Setup wird trotzdem versucht."
 }
 
 # ── System aktualisieren ──────────────────────────────────────────────
@@ -78,7 +93,7 @@ configure_openrouter() {
   echo "  Lade mindestens 10 EUR auf, damit der Key funktioniert."
   echo ""
   while true; do
-    read -rp "  OpenRouter API Key (beginnt mit sk-or-...): " OR_KEY
+    ask "  OpenRouter API Key (beginnt mit sk-or-...): " OR_KEY
     [[ "$OR_KEY" =~ ^sk-or- ]] && break
     warn "  Ungültiges Format – muss mit 'sk-or-' beginnen."
   done
@@ -101,7 +116,7 @@ configure_telegram() {
   echo "  5. Wähle einen Username (muss auf 'bot' enden, z.B. 'MeinNameKI_bot')"
   echo "  6. BotFather schickt dir einen Token – kopiere ihn"
   echo ""
-  read -rp "  Telegram Bot Token: " TG_TOKEN
+  ask "  Telegram Bot Token: " TG_TOKEN
   [[ -z "$TG_TOKEN" ]] && fail "Kein Token eingegeben."
   hermes config set TELEGRAM_BOT_TOKEN "$TG_TOKEN"
 
@@ -114,7 +129,7 @@ configure_telegram() {
   echo "     https://api.telegram.org/botDEIN_TOKEN/getUpdates"
   echo "  4. Suche nach: \"id\": XXXXXXX – das ist deine User-ID"
   echo ""
-  read -rp "  Deine Telegram User-ID (nur Zahlen): " TG_USER_ID
+  ask "  Deine Telegram User-ID (nur Zahlen): " TG_USER_ID
   [[ "$TG_USER_ID" =~ ^[0-9]+$ ]] || fail "User-ID muss nur aus Zahlen bestehen."
   hermes config set TELEGRAM_ALLOWED_USERS "$TG_USER_ID"
   ok "Telegram konfiguriert · User-ID: $TG_USER_ID"
@@ -191,7 +206,7 @@ print_summary() {
 main() {
   banner
   check_root
-  check_ubuntu
+  check_os
   update_system
   install_hermes
   configure_openrouter
