@@ -205,4 +205,17 @@ print_summary() {
 }
 
 # ── Hauptprogramm ─────────────────────────────────────────────────────
+
+main() {
+  banner
+  check_root
+  check_os
+  update_system
+  install_hermes
+  configure_openrouter
+  configure_telegram
+  install_service
+  print_summary
+}
+
 main "$@"
