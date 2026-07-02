@@ -58,4 +58,66 @@ journalctl -u hermes-gateway -f   # Live-Logs
 
 ---
 
+## 🧠 Abend 3: Domain-Skills — Dein Assistent kann mehr
+
+Nach der Installation hast Du drei **fertige Skills** die Deinen Hermes
+zum Spezialisten für Dein Unternehmen machen:
+
+| Skill | Emoji | Was er kann |
+|-------|-------|-------------|
+| **Assistent** | 🧠 | Erkennt automatisch worum es geht, lädt den richtigen Experten |
+| **Unternehmens-Berater** | 🏢 | Geschäftsstrategie, Finanzen, Marketing, Prozesse |
+| **Versicherungs-Prüfer** | 🛡️ | Deckungslücken finden, Beiträge optimieren |
+| **Gesundheit-Wache** | ❤️ | Blutwerte-Trends, Vorsorge-Kalender, Prävention |
+
+### Installation (nach dem Server-Setup)
+
+```bash
+# 1. USER.md mit eigenen Daten ausfüllen
+nano USER.md
+
+# 2. Skills kopieren
+mkdir -p ~/.hermes/skills
+cp -r skills/* ~/.hermes/skills/
+cp AGENTS.md ~/.hermes/skills/
+
+# 3. Hermes neustarten
+systemctl restart hermes-gateway
+
+# 4. Testen — schreib deinem Bot:
+# "Hilf mir bei der Unternehmensberatung"
+# "Prüf meine Versicherungen"
+# "Check meine Gesundheitsdaten"
+```
+
+### 🔑 SSH-Key für VSCode (optional)
+
+in `docs/ssh-key-guide.md`:
+- SSH-Key erstellen
+- Per VSCode Remote-SSH auf den Server verbinden
+- Skills bequem editieren
+
+### ⏰ Cron-Jobs automatisieren
+
+in `cron/README.md`:
+- Monatlicher Versicherungs-Check
+- Vierteljährlicher Business-Review
+- Wöchentlicher Gesundheits-Check
+
+---
+
+| Datei | Wofür? |
+|-------|--------|
+| `USER.md` | **Deine Daten** — trage Name, Firma, Versicherungen, Gesundheit ein |
+| `AGENTS.md` | Team-Übersicht für den Assistenten |
+| `skills/assistent/` | Einstiegs-Skill — erkennt die Domain |
+| `skills/unternehmens-berater/` | Business-Analyse |
+| `skills/versicherungs-pruefer/` | Versicherungs-Check |
+| `skills/gesundheit-wache/` | Gesundheits-Monitoring |
+| `setup.ps1` / `setup.sh` | Kopiert alles an den richtigen Ort |
+
+---
+
+*Abend 3 Teil: Skills & Personalisierung — jeder Teilnehmer passt die Skills an.*
+
 Basiert auf [Hermes Agent](https://github.com/NousResearch/hermes-agent) von NousResearch · MIT License
