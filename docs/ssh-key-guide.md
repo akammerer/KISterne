@@ -12,7 +12,7 @@ Das brauchst Du später auch um:
 
 ## 🧰 Was Du brauchst
 
-- **Windows-Notebook** mit Git Bash (kommt mit Git für Windows)
+- **Windows-Notebook** — PowerShell **oder** Git Bash (beide funktionieren)
 - **Zugang zu Deinem Server** (IP/Hostname + root-Passwort aktuell)
 - **VSCode** mit **Remote-SSH Extension** (wir installieren das später)
 
@@ -66,31 +66,54 @@ ssh-copy-id -i ~/.ssh/id_ed25519.pub root@DEINE_SERVER_IP
 
 → Passwort eingeben (ein letztes Mal 😉)
 
-### Weg B — Manuell (falls Weg A nicht klappt):
+### Weg B — Per Echo-Befehl (funktioniert in PowerShell UND Git Bash)
 
-```bash
-# 1. Auf dem Notebook: Public Key auslesen
+⚠️ **🔴 WICHTIG: Der Public Key muss als GANZE Zeile kopiert werden!**
+Nicht nur der mittlere Teil — sonst klappts nicht!
+
+**RICHTIG** (komplette Zeile):
+```
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA..............2FPvj9KqV mein-hermes-key
+├─────────┘               └───────────────┘        └─────────────┘
+Typ "ssh-ed25519"       Der eigentliche Key        Kommentar (frei wählbar)
+```
+
+**FALSCH** (fehlender Typ + Kommentar → wird nicht akzeptiert!):
+```
+AAAAC3NzaC1lZDI1NTE5AAAA..............2FPvj9KqV
+└────────────────────────────────────────────┘
+Nur der Key — ohne "ssh-ed25519" und ohne "mein-hermes-key"
+```
+
+**So machst Du's richtig:**
+
+```powershell
+# 1. Auf dem Notebook: Den Public Key anzeigen
 cat ~/.ssh/id_ed25519.pub
 ```
 
-→ Markiere die Ausgabe mit der Maus (kopieren)
+→ Gibt z.B. aus:
+```
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE+R6+YYBjo+bsFSVZ9kry37nD5tGSJVrcJCbRDT+loP mein-hermes-key
+```
 
-```bash
-# 2. Per SSH auf den Server verbinden
+**⚠️ Markiere die GESAMTE Zeile** (von `ssh-ed25519` bis `mein-hermes-key`) und kopiere sie.
+
+```powershell
+# 2. Mit SSH auf den Server verbinden
 ssh root@DEINE_SERVER_IP
 # ← root-Passwort eingeben
 
-# 3. Auf dem Server: authorized_keys anlegen
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-echo "HIER DEN GEKOPIERTEN KEY EINFÜGEN" >> ~/.ssh/authorized_keys
+# 3. Auf dem Server: authorized_keys mit der kompletten Zeile anlegen
+#    (hier den kopierten KEY einfügen — muss mit ssh-ed25519 beginnen)
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE+R6+YYBjo+bsFSVZ9kry37nD5tGSJVrcJCbRDT+loP mein-hermes-key" > ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
 
-# 4. Prüfen ob's drin ist:
+# 4. Prüfen ob's komplett drin ist:
 cat ~/.ssh/authorized_keys
-```
+# → Muss die GANZE Zeile zeigen, beginnend mit "ssh-ed25519 ..."
 
-```bash
 # 5. Ausloggen
 exit
 ```
