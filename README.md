@@ -5,7 +5,7 @@ von [Andreas Kammerer, CMC](https://kammerer.at) · Navigating the Age of AI
 
 ## Schnellstart
 
-Auf dem Hetzner-Server als root ausführen:
+Auf dem netcup-Server als root ausführen:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/akammerer/KISterne/main/setup-hermes.sh | bash
@@ -21,10 +21,10 @@ Das Script installiert und konfiguriert automatisch:
 
 | Was | Details |
 |---|---|
-| Server | Hetzner CX23 oder größer · Ubuntu 22.04/24.04/26.04 |
+| Server | netcup VPS oder vergleichbar · Ubuntu 22.04/24.04/26.04 |
 | OpenRouter | Account + API Key + mind. EUR 10 Guthaben |
 | Telegram | Bot-Token von @BotFather |
-| Kosten | ca. EUR 4,79/Monat (Hetzner) + Verbrauch (OpenRouter) |
+| Kosten | ca. EUR 5/Monat (netcup) + Verbrauch (OpenRouter) |
 
 ## Was das Script tut
 
@@ -106,6 +106,15 @@ in `cron/README.md`:
 
 ---
 
+## 🗄️ Abend 4: Übungsdatenbank
+
+`mini_erp.db` — SQLite-Datenbank für die MCP-Übung (Kunden, Artikel,
+Rechnungen einer fiktiven Firma aus der Region Peuerbach).
+Download: oben in der Dateiliste anklicken → „Download raw file",
+dann nach `C:\Firma\` legen.
+
+---
+
 | Datei | Wofür? |
 |-------|--------|
 | `USER.md` | **Deine Daten** — trage Name, Firma, Versicherungen, Gesundheit ein |
@@ -114,6 +123,7 @@ in `cron/README.md`:
 | `skills/unternehmens-berater/` | Business-Analyse |
 | `skills/versicherungs-pruefer/` | Versicherungs-Check |
 | `skills/gesundheit-wache/` | Gesundheits-Monitoring |
+| `mini_erp.db` | Übungsdatenbank für Abend 4 (MCP + SSH-Tunnel) |
 | `setup.ps1` / `setup.sh` | Kopiert alles an den richtigen Ort |
 
 ---
