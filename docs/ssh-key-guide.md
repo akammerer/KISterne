@@ -23,7 +23,7 @@ Das brauchst Du später auch um:
 Öffne **Git Bash** (nicht CMD, nicht PowerShell):
 
 ```bash
-# In Git Bash eingeben:
+# In Git Bash eingeben: (mein-hermis-key ist nur ein Name, kann man genau so kopieren)
 ssh-keygen -t ed25519 -C "mein-hermes-key"
 ```
 
