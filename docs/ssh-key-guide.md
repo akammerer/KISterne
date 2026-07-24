@@ -15,7 +15,7 @@ Das brauchst Du später auch um:
 - **Windows-Notebook** — PowerShell **oder** Git Bash (beide funktionieren)
 - **Zugang zu Deinem Server** (IP/Hostname + root-Passwort aktuell)
 - **VSCode** mit **Remote-SSH Extension** (wir installieren das später)
-
+- **GIT for Windows** https://gitforwindows.org/
 ---
 
 ## 📋 Schritt 1: SSH-Key erstellen (auf Deinem Notebook)
